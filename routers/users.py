@@ -4,7 +4,10 @@ import schema, models , utils
 from database import get_db
 from typing import List
 # User routes
-router = APIRouter()
+router = APIRouter(
+    prefix="/users",
+    tags=["users"],
+)
 @router.get("/get_users",response_model=List[schema.UserCreate])
 def get_all_users(db:Session = Depends(get_db)):
     all_users = db.query(models.Users).all()

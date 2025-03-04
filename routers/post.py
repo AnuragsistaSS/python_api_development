@@ -4,7 +4,10 @@ import schema, models
 from database import get_db
 from typing import List
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/posts",
+    tags=["posts"]
+)
 @router.get("/",response_model=List[schema.Post])
 def get_all_Posts( db: Session = Depends(get_db)):
     all_Posts = db.query(models.Post).all()
