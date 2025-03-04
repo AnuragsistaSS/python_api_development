@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Response, status, HTTPException
+from fastapi import FastAPI, Response, status, HTTPException, Depends
 from fastapi.params import Body
 from pydantic import BaseModel
 from typing import List,Dict,Any
@@ -7,8 +7,15 @@ import os
 from dotenv import load_dotenv
 from psycopg2.extras import RealDictCursor
 from psycopg2 import DatabaseError
+import models
+from models import Base
+from database import engine, SessionLocal, get_db
+from sqlalchemy.orm import Session
 app = FastAPI()
 load_dotenv()
+
+models.Base.metadata.create_all(bind=engine)
+
 sample_data = [
     {
         "roll_no": 101,
@@ -37,9 +44,6 @@ sample_data = [
     }
 ]
 
-# Print the sample data
-for student in sample_data:
-    print(student)
 
 class Student(BaseModel):
     #student details 
@@ -56,7 +60,6 @@ try:
     Database_name = os.getenv('DATABASE')
     User = os.getenv("USER")
     Password = os.getenv("PASSWORD")
-    print(Password)
     conn = psycopg2.connect(host = Database_host, port=Database_port, database = Database_name, user=User, password=Password, cursor_factory=RealDictCursor)
     cursor = conn.cursor()
 
@@ -145,4 +148,10 @@ def updated_student(roll_no:int, new_details : Student):
 
 
     
+# checking sqlaclhemy functionality
+
+@app.get("/sqlalchemy")
+def test_students(db: Session = Depends(get_db)):
+    students = db.query(models.Student).all()
+    return {"Students": students}
 
