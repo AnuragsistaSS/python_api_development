@@ -8,19 +8,20 @@ from psycopg2 import DatabaseError
 import models,schema
 from database import engine, SessionLocal, get_db
 from sqlalchemy.orm import Session
+from typing import List, Optional
 app = FastAPI()
 load_dotenv()
 
 models.Base.metadata.create_all(bind=engine)
 
 
-@app.get("/")
+@app.get("/",response_model=List[schema.Post])
 def get_all_Posts( db: Session = Depends(get_db)):
     all_Posts = db.query(models.Post).all()
     if all_Posts is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"No records found")
 
-    return {"Post Records": all_Posts}
+    return all_Posts
     
 
 @app.post("/add_post",status_code = status.HTTP_201_CREATED, response_model=schema.Post)
@@ -57,7 +58,7 @@ def del_Post(id: int,db: Session = Depends(get_db)):
 
 # updating a Post
 @app.put("/get_post/{id}", status_code=status.HTTP_201_CREATED, response_model= schema.Post)
-def updated_Post(id:int, new_details : schema.Post, db: Session = Depends(get_db)):
+def updated_Post(id:int, new_details : schema.PostBase, db: Session = Depends(get_db)):
     Post_query = db.query(models.Post).filter(models.Post.id==id)
     if not Post_query.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with {id} not found")
@@ -66,3 +67,10 @@ def updated_Post(id:int, new_details : schema.Post, db: Session = Depends(get_db
     return Post_query.first()
 
 
+@app.post("/add_user",status_code = status.HTTP_201_CREATED, response_model=schema.Users)
+def add_User(user:schema.Users, db: Session = Depends(get_db)):
+    new_User = models.Users(**user.model_dump())
+    db.add(new_User)
+    db.commit()
+    db.refresh(new_User)
+    return new_User
