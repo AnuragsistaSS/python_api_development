@@ -1,12 +1,13 @@
 from database import Base
-from sqlalchemy import Column, Integer, String, TIMESTAMP
+from sqlalchemy import Column, Integer, String, TIMESTAMP, Boolean
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.sql.expression import text
 
-class Student(Base):
-    __tablename__= "Student_details" 
+class Post(Base):
+    __tablename__= "Posts" 
     
-    roll_no = Column(Integer,primary_key = True, nullable= False)
-    name = Column(String,nullable=False)
-    enrolled_courses = Column(ARRAY(String), nullable=True)
-    added_at = Column(TIMESTAMP(timezone=True),nullable= False, server_default = text('now()'))
+    title = Column(String,nullable=False)
+    content = Column(String,nullable=False) 
+    published = Column(Boolean, server_default='TRUE', nullable=False)
+    id = Column(Integer,primary_key = True, nullable= False)
+    created_at = Column(TIMESTAMP(timezone=True),nullable= False, server_default = text('now()'))
