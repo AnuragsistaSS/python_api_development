@@ -49,6 +49,6 @@ def update_user(id:int, updated_user: schema.UserCreate, db: Session = Depends(g
     user_query = db.query(models.Users).filter(models.Users.id==id)
     if not user_query.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with {id} not found")
-    user_query.udate(updated_user.model_dump(), synchronize_session=False)
+    user_query.update(updated_user.model_dump(), synchronize_session=False)
     db.commit()
-   
+    return user_query.first()

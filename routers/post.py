@@ -8,7 +8,7 @@ router = APIRouter(
     prefix="/posts",
     tags=["posts"]
 )
-@router.get("/",response_model=List[schema.Post])
+@router.get("/",response_model=List[schema.PostBase])
 def get_all_Posts( db: Session = Depends(get_db)):
     all_Posts = db.query(models.Post).all()
     if all_Posts is None:
@@ -17,8 +17,8 @@ def get_all_Posts( db: Session = Depends(get_db)):
     return all_Posts
     
 
-@router.post("/add_post",status_code = status.HTTP_201_CREATED, response_model=schema.Post)
-def add_Post(post:schema.Post, db: Session = Depends(get_db)):
+@router.post("/add_post",status_code = status.HTTP_201_CREATED, response_model=schema.PostCreate)
+def add_Post(post:schema.PostCreate, db: Session = Depends(get_db)):
     new_Post = models.Post(**post.model_dump())
     db.add(new_Post)
     db.commit()
@@ -27,14 +27,14 @@ def add_Post(post:schema.Post, db: Session = Depends(get_db)):
     return new_Post
     
 
-@router.get("/get_post/{id}")
+@router.get("/get_post/{id}", response_model=schema.PostOut)
 def get_Post(id: int, db: Session = Depends(get_db)):
 
     Post = db.query(models.Post).filter(models.Post.id==id).first()
     if not Post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with {id} not found")
 
-    return {"Post": Post}    
+    return Post
    
 
 # deleting a post 
@@ -50,11 +50,12 @@ def del_Post(id: int,db: Session = Depends(get_db)):
     
 
 # updating a Post
-@router.put("/get_post/{id}", status_code=status.HTTP_201_CREATED, response_model= schema.Post)
-def updated_Post(id:int, new_details : schema.PostBase, db: Session = Depends(get_db)):
+@router.put("/get_post/{id}", status_code=status.HTTP_201_CREATED, response_model= schema.PostOut)
+def updated_Post(id:int, new_details : schema.UpdatePost, db: Session = Depends(get_db)):
     Post_query = db.query(models.Post).filter(models.Post.id==id)
     if not Post_query.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with {id} not found")
     Post_query.update(new_details.model_dump(), synchronize_session=False)
+    upd_post = Post_query.first()
     db.commit()
-    return Post_query.first()
+    return upd_post 

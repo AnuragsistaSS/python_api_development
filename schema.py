@@ -7,9 +7,9 @@ class PostBase(BaseModel):
     content : str
     published: bool = True
 
-class PostCreate(BaseModel):
+class PostCreate(PostBase):
     pass
-class Post(PostBase):
+class PostOut(PostBase):
     id: int
     created_at: datetime
 
@@ -19,18 +19,12 @@ class Post(PostBase):
 class UpdatePost(BaseModel):
     title: Optional[str]
     content: Optional[str]
-
-    class Config:
-        orm_mode = True
-
+    published: Optional[bool]
 
 class UserCreate(BaseModel):
     id: int
     email: EmailStr
     password: str
-
-    class Config:
-        orm_mode = True
 
 class UserOut(BaseModel):
     id: int
@@ -38,6 +32,7 @@ class UserOut(BaseModel):
 
     class Config:
         orm_mode = True
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str

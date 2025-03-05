@@ -10,7 +10,7 @@ import models,schema
 from database import engine, SessionLocal, get_db
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from routers import users, post
+from routers import users, post, auth
 import utils
 app = FastAPI()
 load_dotenv()
@@ -19,3 +19,4 @@ models.Base.metadata.create_all(bind=engine)
 
 app.include_router(users.router)
 app.include_router(post.router)
+app.include_router(auth.router)
