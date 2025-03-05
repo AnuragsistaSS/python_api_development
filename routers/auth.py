@@ -13,8 +13,8 @@ def login(user_credentials : OAuth2PasswordRequestForm = Depends() ,db : Session
 
     User = db.query(models.Users).filter(models.Users.email==user_credentials.username).first()
     if not User:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with {User.email} not found")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail=f"User with {User.email} not found")
     if not utils.verify_password(user_credentials.password,User.password):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Invalid password")
-    access_token = oauth2.create_access_token(data={"sub":User.id})
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail=f"Invalid password")
+    access_token = oauth2.create_access_token(data={"user_id":User.id})
     return {"access_token":access_token,"token_type":"bearer"}
