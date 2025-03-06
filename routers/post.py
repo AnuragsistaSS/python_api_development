@@ -41,7 +41,7 @@ def get_Post(id: int, db: Session = Depends(get_db),current_user: int = Depends(
 @router.get("/get_posts", response_model=List[schema.PostOut])
 def get_Posts(db: Session = Depends(get_db),current_user: int = Depends(oauth2.get_current_user), Limit: int = 10,skip: int = 0,search: Optional[str] = ""):
 
-    Post = db.query(models.Post).filter(models.Post.title.contains(search)).limit(Limit).offset(skip).all()
+    Post = db.query(models.Post).filter(models.Post.owner_id == current_user.id,models.Post.title.contains(search)).limit(Limit).offset(skip).all()
     if not Post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post not found")
     return Post

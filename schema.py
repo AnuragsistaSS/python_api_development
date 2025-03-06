@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime
-
+from pydantic.types import conint
 # User schema
 class UserCreate(BaseModel):
     id: int
@@ -48,3 +48,8 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     id: Optional[int] = None
+
+# Vote schema
+class VoteSchema(BaseModel):
+    post_id: int
+    direction: conint(ge=-1,le=1)

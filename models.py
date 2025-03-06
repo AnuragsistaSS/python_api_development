@@ -20,3 +20,7 @@ class Users(Base):
     password = Column(String, nullable = False)
     created_at = Column(TIMESTAMP(timezone=True),nullable= False, server_default = text('now()'))
     
+class Votes(Base):
+    __tablename__ = "Votes"
+    post_id = Column(Integer, ForeignKey('Posts.id'), primary_key = True, nullable = False)
+    user_id = Column(Integer, ForeignKey('Users.id'), primary_key = True, nullable = False)
