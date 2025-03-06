@@ -46,6 +46,9 @@ def del_user(id: int,db: Session = Depends(get_db)):
 
 @router.put("/get_user/{id}",status_code=status.HTTP_201_CREATED, response_model=schema.UserOut)
 def update_user(id:int, updated_user: schema.UserCreate, db: Session = Depends(get_db)):
+    hashed_password = utils.hash_password(updated_user.password)
+    updated_user.password = hashed_password
+    print(updated_user.password)
     user_query = db.query(models.Users).filter(models.Users.id==id)
     if not user_query.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with {id} not found")
