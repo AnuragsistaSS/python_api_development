@@ -2,7 +2,8 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime
 from pydantic.types import conint
-# User schema
+
+#User schema
 class UserCreate(BaseModel):
     id: int
     email: EmailStr
@@ -20,19 +21,29 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
-# Post schema
+#Post schema
 class PostBase(BaseModel):
     title : str 
     content : str
     published: bool = True
 
+class Post(PostBase):
+    id: int
+    owner_id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
 class PostCreate(PostBase):
     pass
+
 class PostOut(PostBase):
     id: int
     created_at: datetime
     owner_id: int
     owner : UserOut
+
     class Config:
         from_attributes = True
 
@@ -41,7 +52,11 @@ class UpdatePost(BaseModel):
     content: Optional[str]
     #published: Optional[bool]
 
-# Token schema
+class PostWithVotes(BaseModel):
+    Post: Post
+    votes: int
+
+#Token schema
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -49,7 +64,8 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: Optional[int] = None
 
-# Vote schema
+#Vote schema
 class VoteSchema(BaseModel):
     post_id: int
-    direction: conint(ge=-1,le=1)
+    direction: conint(ge=-1, le=1)
+

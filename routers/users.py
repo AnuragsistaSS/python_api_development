@@ -8,7 +8,7 @@ router = APIRouter(
     prefix="/users",
     tags=["users"],
 )
-@router.get("/get_users",response_model=List[schema.UserCreate])
+@router.get("/",response_model=List[schema.UserCreate])
 def get_all_users(db:Session = Depends(get_db)):
     all_users = db.query(models.Users).all()
     if all_users is None:
@@ -35,7 +35,7 @@ def get_user(id : int, db:Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with {id} not found")
     return user
 
-@router.delete("/get_user/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/delete_user/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def del_user(id: int,db: Session = Depends(get_db)):
     
     user_query = db.query(models.Users).filter(models.Users.id==id)
@@ -44,7 +44,7 @@ def del_user(id: int,db: Session = Depends(get_db)):
     user_query.delete(synchronize_session= False)
     db.commit()
 
-@router.put("/get_user/{id}",status_code=status.HTTP_201_CREATED, response_model=schema.UserOut)
+@router.put("/update_user/{id}",status_code=status.HTTP_201_CREATED, response_model=schema.UserOut)
 def update_user(id:int, updated_user: schema.UserCreate, db: Session = Depends(get_db)):
     hashed_password = utils.hash_password(updated_user.password)
     updated_user.password = hashed_password
