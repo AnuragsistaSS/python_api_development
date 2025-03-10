@@ -1,10 +1,10 @@
-from database import Base
+from app.database import Base
 from sqlalchemy import Column, Integer, String, TIMESTAMP, Boolean, ForeignKey
 from sqlalchemy.sql.expression import text
 from sqlalchemy.orm import relationship
 
 class Post(Base):
-    __tablename__= "Posts" 
+    __tablename__= "Post" 
     
     title = Column(String,nullable=False)
     content = Column(String,nullable=False) 
@@ -22,5 +22,5 @@ class Users(Base):
     
 class Votes(Base):
     __tablename__ = "Votes"
-    post_id = Column(Integer, ForeignKey('Posts.id'), primary_key = True, nullable = False)
+    post_id = Column(Integer, ForeignKey('Post.id'), primary_key = True, nullable = False)
     user_id = Column(Integer, ForeignKey('Users.id'), primary_key = True, nullable = False)

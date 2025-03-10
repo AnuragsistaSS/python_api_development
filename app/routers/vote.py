@@ -1,7 +1,9 @@
-from fastapi import FastAPI, Response, status, HTTPException,Depends,APIRouter
-import models, schema, oauth2
+from fastapi import status, HTTPException,Depends,APIRouter
+import app.models as models
+import app.schema as schema
+import app.oauth2 as oauth2
 from sqlalchemy.orm import Session
-from database import get_db
+from app.database import get_db
 from typing import List
 router = APIRouter(
     prefix="/vote",
@@ -14,7 +16,6 @@ def vote(vote: schema.VoteSchema, db: Session = Depends(get_db), current_user: i
         post_found = db.query(models.Post).filter(models.Post.id==vote.post_id).first()
         if not post_found:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {vote.post_id} not found")
-        
 
         votes =db.query(models.Votes).filter(models.Votes.post_id==vote.post_id,models.Votes.user_id==current_user.id)
         vote_found = votes.first() 

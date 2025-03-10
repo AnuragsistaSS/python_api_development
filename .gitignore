@@ -1,3 +1,4 @@
 .env
 api_dev/
 __pycache__/
+.pytest_cache/
