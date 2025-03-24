@@ -16,7 +16,7 @@ def get_all_users(db:Session = Depends(get_db)):
 
         all_users = db.query(models.Users).all()
         if all_users is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"No records found")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="No records found")
 
         return all_users
     except Exception as e:

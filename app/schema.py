@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime
 from pydantic.types import conint
 
@@ -48,9 +48,9 @@ class PostOut(PostBase):
         from_attributes = True
 
 class UpdatePost(BaseModel):
-    #title: Optional[str]
+    title: Optional[str]
     content: Optional[str]
-    #published: Optional[bool]
+    published: Optional[bool]
 
 class PostWithVotes(BaseModel):
     Post: Post

@@ -28,7 +28,7 @@ def verify_access_token(token:str , credentials_exception):
         if user_id is None:
             raise credentials_exception
         token_data = schema.TokenData(id=user_id)
-    except JWTError:
+    except JWTError:    
         raise credentials_exception
     return token_data
     

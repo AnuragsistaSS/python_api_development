@@ -4,7 +4,6 @@ import app.schema as schema
 import app.oauth2 as oauth2
 from sqlalchemy.orm import Session
 from app.database import get_db
-from typing import List
 router = APIRouter(
     prefix="/vote",
     tags=["vote"]

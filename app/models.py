@@ -12,7 +12,7 @@ class Post(Base):
     id = Column(Integer,primary_key = True, nullable= False)
     created_at = Column(TIMESTAMP(timezone=True),nullable= False, server_default = text('now()'))
     owner_id = Column(Integer,ForeignKey('Users.id',ondelete='CASCADE'),nullable=False)
-    owner = relationship("Users")
+    owner = relationship("Users")   
 class Users(Base):
     __tablename__ = "Users"
     id = Column(Integer, primary_key = True, nullable = False)
